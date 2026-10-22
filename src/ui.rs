@@ -536,7 +536,7 @@ fn draw_procs(f: &mut Frame, area: Rect, app: &App) {
                 let cells = vec![
                     Cell::from(r.pid.to_string()).style(Style::new().fg(Color::DarkGray)),
                     Cell::from(r.name.clone()),
-                    pct_cell(r.cpu),
+                    pct_cell(app.proc_cpu(r)),
                     pct_cell(r.mem_pct),
                     bytes_cell(r.mem, r.mem_pct),
                     pct_cell(r.gpu),
@@ -588,6 +588,11 @@ fn draw_footer(f: &mut Frame, area: Rect, app: &App) {
         desc("processes".into()),
         key(" s "),
         desc("sort".into()),
+        key(" n "),
+        desc(format!(
+            "CPU% {}",
+            if app.normalize_cpu { "of all cores" } else { "per core" }
+        )),
         key(" ↑↓ "),
         desc("select".into()),
     ]);

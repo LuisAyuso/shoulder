@@ -46,6 +46,7 @@ fn run(terminal: &mut DefaultTerminal, app: &mut App) -> Result<()> {
         match key.code {
             KeyCode::Char('q') | KeyCode::Esc => return Ok(()),
             KeyCode::Char('c') => app.per_core = !app.per_core,
+            KeyCode::Char('n') => app.normalize_cpu = !app.normalize_cpu,
             KeyCode::Char('p') | KeyCode::Char(' ') => app.paused = !app.paused,
             KeyCode::Char('w') => app.window_idx = (app.window_idx + 1) % WINDOWS.len(),
             KeyCode::Char('g') | KeyCode::Tab if !app.gpus.is_empty() => {

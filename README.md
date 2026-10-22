@@ -16,7 +16,8 @@ cargo run --release
 
 Keys: `q` quit · `c` per-core CPU · `w` cycle window (60/120/300/600 s) ·
 `+`/`-` sample interval · `p`/space pause · `g`/Tab next GPU ·
-`t` toggle process table · `s` cycle sort column · `↑↓`/`jk`/PgUp/PgDn select
+`t` toggle process table · `s` cycle sort column ·
+`n` normalize process CPU% by core count · `↑↓`/`jk`/PgUp/PgDn select
 
 ## GPU backends
 
@@ -43,4 +44,5 @@ sudo setcap cap_sys_ptrace+ep target/release/shoulder
 processes without root.
 
 GMEM% is relative to the GPU's memory pool: VRAM on discrete GPUs, system RAM
-on integrated ones. CPU% follows the htop convention (100% = one core).
+on integrated ones. Process CPU% is normalized by core count by default (100% =
+all cores busy); press `n` for the htop convention (100% = one core).

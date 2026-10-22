@@ -103,6 +103,8 @@ pub struct App {
     pub window_idx: usize,
     pub interval_idx: usize,
     pub per_core: bool,
+    /// Show process CPU% relative to all cores (100% == whole machine).
+    pub normalize_cpu: bool,
     pub paused: bool,
 }
 
@@ -147,6 +149,7 @@ impl App {
             window_idx: 1,
             interval_idx: 2,
             per_core: false,
+            normalize_cpu: true,
             paused: false,
         };
         app.sample_temps();
@@ -159,6 +162,15 @@ impl App {
 
     pub fn window(&self) -> f64 {
         WINDOWS[self.window_idx]
+    }
+
+    /// A process's CPU% as displayed, honoring `normalize_cpu`.
+    pub fn proc_cpu(&self, r: &ProcRow) -> f64 {
+        if self.normalize_cpu {
+            r.cpu / self.cpu_cores.len().max(1) as f64
+        } else {
+            r.cpu
+        }
     }
 
     pub fn selected_gpu(&self) -> Option<&GpuHist> {
