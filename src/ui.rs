@@ -185,7 +185,8 @@ fn draw_cpu(f: &mut Frame, area: Rect, app: &App) {
     }
     let extra = format!("{} cores · {}", app.cpu_cores.len(), app.cpu_name);
     let block = panel(title("CPU", pct(total), extra));
-    time_chart(f, area, block, &plots, 100.0, pct, w);
+    let y_max = pct_scale(&plots);
+    time_chart(f, area, block, &plots, y_max, pct, w);
 }
 
 fn fmt_bytes(b: f64) -> String {
@@ -532,7 +533,7 @@ fn draw_procs(f: &mut Frame, area: Rect, app: &App) {
             .skip(offset)
             .take(visible)
             .map(|(i, r): (usize, &ProcRow)| {
-                let row = Row::new(vec![
+                let cells = vec![
                     Cell::from(r.pid.to_string()).style(Style::new().fg(Color::DarkGray)),
                     Cell::from(r.name.clone()),
                     pct_cell(r.cpu),
@@ -543,11 +544,14 @@ fn draw_procs(f: &mut Frame, area: Rect, app: &App) {
                     pct_cell(r.gpu_mem_pct),
                     bytes_cell(r.gpu_mem, r.gpu_mem_pct),
                     Cell::from(r.command.clone()).style(Style::new().fg(Color::DarkGray)),
-                ]);
+                ];
                 if i == app.proc_sel {
-                    row.style(Style::new().bg(Color::DarkGray).fg(Color::White))
+                    // Cell colors would override the row's, and the dim ones
+                    // vanish on the DarkGray highlight.
+                    let cells = cells.into_iter().map(|c| c.style(Style::new()));
+                    Row::new(cells).style(Style::new().bg(Color::DarkGray).fg(Color::White))
                 } else {
-                    row
+                    Row::new(cells)
                 }
             });
     let table = Table::new(rows, columns.map(|(_, _, c)| c))
