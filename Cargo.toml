@@ -1,0 +1,20 @@
+[package]
+name = "shoulder"
+version = "0.1.0"
+edition = "2024"
+description = "TUI system monitor: CPU, memory, GPU engines, VRAM and temperatures"
+
+[dependencies]
+anyhow = "1.0.104"
+crossterm = "0.29.0"
+nvml-wrapper = { version = "0.13.0", optional = true }
+ratatui = "0.30.2"
+sysinfo = "0.39.6"
+
+[features]
+default = ["nvidia"]
+# NVML is loaded at runtime (dlopen), so this builds fine on machines without NVIDIA.
+nvidia = ["dep:nvml-wrapper"]
+
+[profile.release]
+lto = "thin"
